@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>평가 문항</title>
+    <link rel="stylesheet" type="text/css" href="./commons.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <style>
+
+    </style>
+
+    <!-- jquery cdn 을 등록하지 않았음-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+
+        $(function () {
+            var secret = "";
+            var maxlength = 7;
+
+            shuffleButton();
+            displayNumber();
+
+            $(".btn-shuffle").on("click", function () {
+                shuffleButton();
+            });
+            $(".btn-delete").on("click", function () {
+                if (secret.length == 0) return;
+                secret = secret.substring(0, secret.length - 1);
+                displayNumber();
+            });
+            $(".btn-clear").on("click", function () {
+                secret = "";
+                displayNumber();
+            });
+            $(".btn-number").on("click", function () {
+                var number = $(this).text().trim();
+                if (number.length == 0) return;
+                if (secret.length == maxlength) return;
+
+                secret += number;
+                displayNumber();
+            });
+
+            //secret에 맞게 화면에 번호를 표시하는 함수
+            function displayNumber() {
+                var numbers = $(".number");
+                numbers.removeClass("red gray").addClass("gray");
+                for (var i = 0; i < secret.length; i++) {   //// 반복문인데  for가 아닌 while문으로 작성되어있음
+                    numbers.eq(i).removeClass("gray").addClass("blue");
+                }
+            }
+
+            //키패드를 섞는 함수
+            function shuffleButton() {
+                var buttons = $(".btn-number");
+
+                buttons.text("");
+
+                var number = 0;
+                for (var i = 0; i < buttons.length; i++) { // 추가됨
+                    if (number < 10) {
+                        var index = parseInt(Math.random() * buttons.length);
+                        var text = buttons.eq(index).text();
+                        if (text == "") {
+                            buttons.eq(index).text(number);
+                            number++;
+                        }
+                    }
+                } // 추가됨
+
+                //번호가 없는 버튼에는 자물쇠 표시를 추가
+                for (var i = 0; i < buttons.length; i++) {
+                    if (buttons.eq(i).text() == "") {
+                        buttons.eq(i).html("<i class='fa-solid fa-lock'></i>")
+                    }
+                }
+
+            }
+        });
+
